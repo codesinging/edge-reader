@@ -1,7 +1,10 @@
 <template>
   <div class="container">
     <div id="toolbar"></div>
-    <div id="editor"></div>
+    <div id="editor" @dblclick="onDoubleClick"></div>
+    <el-dialog ref="dialog" :visible.sync="dialog" title="查看源码" width="80%" @opened="onDialogOpened">
+      <el-input ref="textarea" type="textarea" rows="20" v-model="content"></el-input>
+    </el-dialog>
   </div>
 </template>
 
@@ -14,9 +17,18 @@ export default {
     return {
       editor: null,
       content: '',
+      dialog: false,
     }
   },
   created() {
+  },
+  methods: {
+    onDoubleClick(){
+      this.dialog = true
+    },
+    onDialogOpened(){
+      this.$refs.textarea.select()
+    },
   },
   mounted() {
     const editor = new E('#toolbar', '#editor')
@@ -25,6 +37,7 @@ export default {
       this.content = content
     }
     editor.config.height = 400
+    editor.config.zIndex = 100
 
     editor.config.menus = []
 
@@ -36,7 +49,7 @@ export default {
   beforeDestroy() {
     this.editor.destroy()
     this.editor = null
-  }
+  },
 }
 </script>
 
